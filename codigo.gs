@@ -1,17 +1,51 @@
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile('Index')
+  // Create a template from the main index file
+  var template = HtmlService.createTemplateFromFile('Index');
+
+  //create final template
+  var output = template.evaluate();
+
+    // Apply methods to the HtmlOutput object 'output'
+    output
     .setTitle('UI Demo')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+
+  return output;
 }
-function getDemoImage() {
-  // Option 1: Return a base64 encoded PNG (small demo image)
-  //const demoImageBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAGFSURBVHgB7dpRDoIwEAXQzp6By+gZvIyewcsYGbzMHoaQkLCwS2E6k/eS0CZD6dC0LXmM5Jg0fS3P8yxvnX4oCe7L/Yq+3ocAARIgQAIESIAACRAgAQIkQIAECJAAARIgQAIESIAACRAgAQIkQIAECJAAARIgQAIESIAECJAAARIgQAIESIAACRAgAQIkQIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAARIgQAIESIAECJAAAfI/Asa03w/tvP5e9sfAHz4GLmEAAAAASUVORK5CYII=';
+
+/**
+ * Returns HTML content from a file, with caching and security checks.
+ * This function is used for dynamic content loading.
+ * @param {string} fileName The name of the HTML file to load
+ * @return {string} The HTML content of the specified file
+ */
+
+function getHtmlContent(fileName) { 
+  // Whitelist of allowed file names (for security purposes)
+    const allowed = ['Dashboard', 'OrdersList', 'Stylesheet', 'JavaScript', 'LoginScreen'];
   
-  // Option 2: Return a URL to an image (uncomment and replace with your URL)
-  return 'https://www.dropbox.com/scl/fi/v7bj219c4sz7irj4uxsvy/Design.png?rlkey=mmqgbxk3wj6bilaxt6wz90mro&st=p7ae6xdq&dl=1';
+  // Check if the requested file is allowed
+  if (!allowed.includes(fileName)) {
+    throw new Error('Invalid view');
+  }
+
+  // Caching the HTML output to improve performance
+  const cache = CacheService.getScriptCache();
+  const key = 'html_' + fileName;
+
+  // Try to retrieve the cached HTML content
+  let html = cache.get(key);
+  if (html) return html;
+
+  // Otherwise, fetch the HTML content and store it in cache
+  html = HtmlService.createHtmlOutputFromFile(fileName).getContent();
   
+  cache.put(key, html, 300); // Cache for 5 minutes (300 seconds)
+
+  return html;
 }
+
 /**
  * Serves the main HTML interface
  * @return {HtmlOutput} The HTML page
