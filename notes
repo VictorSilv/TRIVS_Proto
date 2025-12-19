@@ -1,0 +1,38 @@
+//Para uma distribuidora de bebidas na Orla do Rio de Janeiro em 2025, um Sistema Gestor Logístico PWA (Progressive Web App) deve ser otimizado para mobilidade, baixo consumo de dados e operações em áreas de sinal instável
+
+==================================================================================================================================================================================================================================
+==================================================================================================================================================================================================================================
+                  1. Funcionalidades para Motoristas (Routing & Map Plotting)
+==================================================================================================================================================================================================================================
+==================================================================================================================================================================================================================================
+                  * Roteirização Inteligente (Routing): Planejamento estratégico de rotas para otimizar tempo e combustível, considerando janelas de entrega e especificações dos veículos.
+
+                  * Plotagem em Mapa em Tempo Real: Visualização dinâmica dos pontos de entrega no mapa dentro do app, permitindo sequenciamento lógico (estratégias como "caixeiro viajante" ou "varredura").
+
+                  * Geolocalização e Rastreamento: Monitoramento da posição da frota em tempo real para cálculo de previsão de chegada (ETA) e comprovação de entrega no local correto.
+
+                  * Modo Offline: Essencial para PWAs; permite que o motorista acesse o mapa e a lista de entregas mesmo sem sinal de internet, sincronizando os dados assim que a conexão retornar. 
+
+==================================================================================================================================================================================================================================
+==================================================================================================================================================================================================================================
+                    2. Funcionalidades para Clientes (Carrinho de Compras)
+==================================================================================================================================================================================================================================
+                  * Catálogo Digital e Carrinho: Interface rápida para busca de produtos (cervejas, destilados, gelo) por nome ou marca e adição rápida ao carrinho.
+
+                  * Gestão de Pedidos B2B: Opção de compra por unidade ou caixa fechada, com cálculo automático de impostos e preços diferenciados conforme o volume.
+
+                  * Pagamentos Integrados: Suporte a PIX, cartões de crédito e faturamento direto no checkout do app.
+
+                  * Notificações Push: Alertas sobre promoções sazonais (especialmente relevantes para eventos na orla) e status da entrega. 
+
+==================================================================================================================================================================================================================================
+==================================================================================================================================================================================================================================
+                    3. Requisitos Técnicos do PWA
+==================================================================================================================================================================================================================================
+                  * Manifest e Service Workers: Arquivos que permitem a instalação do app na tela inicial do celular sem passar pela loja oficial e garantem a execução em segundo plano.
+
+                  * Responsividade e HTTPS: O sistema deve ser seguro (SSL) e adaptável a qualquer tamanho de tela, garantindo performance em dispositivos móveis simples.
+
+                  * Integração ERP/PDV: Sincronização em tempo real com o estoque central para evitar a venda de itens indisponíveis.
+
+                    Google Maps? MapLink?
