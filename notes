@@ -36,3 +36,15 @@
                   * Integração ERP/PDV: Sincronização em tempo real com o estoque central para evitar a venda de itens indisponíveis.
 
                     Google Maps? MapLink?
+
+
+one supportive backend file:
+/backend
+  ├─ Código.gs          // UI + routing (already exists)
+  ├─ Config.gs          // GLOBAL CONFIG (sheets, columns, enums)
+  ├─ DataStore.gs       // ALL sheet read/write logic
+  ├─ Validation.gs     // Input sanitization & validation
+  ├─ Auth.gs            // Authentication & roles (future-proof)
+  ├─ Logger.gs          // Unified error + audit logging
+
+
