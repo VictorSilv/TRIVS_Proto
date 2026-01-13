@@ -341,30 +341,346 @@ handleUsernameInput() {
       }
       
       /**
-       * Handle login/register button click
-       */
-      handleButtonClick() {
-        // Prevent multiple clicks during transition
-        if (this.isTransitioning) return;
-        
-        this.isTransitioning = true;
-        
-        // Show image on button click if configured
-        if (this.config.showImageOnButtonClick) {
-          this.showImage({
-            dimBackground: true,
-            hideContainer: true
-          });
-          
-          // Wait for image to show, then proceed with reset
-          setTimeout(() => {
-            this.proceedWithReset();
-          }, 2000);
-        } else {
-          // Proceed directly to reset without showing image
-          this.proceedWithReset();
-        }
-      }
+ * Handle login/register button click
+ */
+async handleButtonClick() {
+  // Prevent multiple clicks during transition
+  if (this.isTransitioning) return;
+  
+  this.isTransitioning = true;
+  
+  const buttonText = this.actionBtn.textContent;
+  const username = this.usernameInput.value.trim();
+  const password = this.passwordInput.value.trim();
+  
+  // Show loading state
+  this.actionBtn.textContent = 'Processando...';
+  this.actionBtn.disabled = true;
+  
+  try {
+    if (buttonText === 'cadastre-me') {
+      // Show registration form
+      await this.showRegistrationForm();
+    } else if (buttonText === 'Login') {
+      // Perform login
+      await this.performLogin(username, password);
+    }
+  } catch (error) {
+    console.error('Action failed:', error);
+    this.showError(error.message || 'Ocorreu um erro. Tente novamente.');
+    this.actionBtn.textContent = buttonText;
+    this.actionBtn.disabled = false;
+    this.isTransitioning = false;
+  }
+}
+
+/**
+ * Perform login via API
+ */
+async performLogin(username, password) {
+  if (!username || !password) {
+    throw new Error('Por favor, preencha usuário e senha');
+  }
+  
+  // Show image during login
+  if (this.config.showImageOnButtonClick) {
+    this.showImage({
+      dimBackground: true,
+      hideContainer: true
+    });
+  }
+  
+  try {
+    // Call server-side login function
+    const result = await new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler(reject)
+        .api_login(username, password);
+    });
+    
+    const data = JSON.parse(result.getContent());
+    
+    if (data.success) {
+      // Redirect to dashboard with session
+      window.location.href = data.redirectUrl;
+    } else {
+      throw new Error(data.error || 'Login falhou');
+    }
+  } catch (error) {
+    this.hideImage();
+    throw error;
+  }
+}
+
+/**
+ * Show registration form
+ */
+async showRegistrationForm() {
+  this.body.style.backgroundColor = 'var(--wine-red)';
+  this.container.style.transform = 'translateY(20px) scale(0.95)';
+  
+  // Transition to registration view
+  this.container.style.opacity = '0';
+  
+  setTimeout(() => {
+     
+      
+    
+    // Replace form content with registration fields
+    const loginBox = document.querySelector('.login-box');
+    loginBox.innerHTML = `
+      <div class="register-box">
+  <h2 class="form-title">Cadastro</h2>
+
+  <div class="input-group">
+    <i class="input-icon fas fa-user"></i>
+    <input
+      type="text"
+      id="reg-username"
+      class="input-field fade-in"
+      placeholder="nome de usuário"
+      autocomplete="off"
+          style="border: 2px solid rgba(139, 0, 0, 0.3); box-shadow: 0 2px 8px rgba(0,0,0,0.2);"
+        >
+      </div>
+      
+      <div class="input-group">
+    <i class="input-icon fas fa-envelope"></i>
+    <input
+      type="email"
+      id="reg-email"
+      class="input-field fade-in"
+      placeholder="email"
+      autocomplete="off"
+          style="border: 2px solid rgba(139, 0, 0, 0.3); box-shadow: 0 2px 8px rgba(0,0,0,0.2);"
+        >
+      </div>
+      
+      <div class="input-group">
+    <i class="input-icon fas fa-lock"></i>
+    <input
+      type="password"
+      id="reg-password"
+      class="input-field fade-in"
+      placeholder="senha"
+      autocomplete="off"
+          style="border: 2px solid rgba(139, 0, 0, 0.3); box-shadow: 0 2px 8px rgba(0,0,0,0.2);"
+        >
+      </div>
+      
+      <div class="input-group">
+    <i class="input-icon fas fa-lock"></i>
+    <input
+      type="password"
+      id="reg-password-confirm"
+      class="input-field fade-in"
+      placeholder="confirmar senha"
+      autocomplete="off"
+          style="border: 2px solid rgba(139, 0, 0, 0.3); box-shadow: 0 2px 8px rgba(0,0,0,0.2);"
+        >
+      </div>
+      
+      
+      <button id="register-btn" class="action-btn fade-in primary">
+    Criar Conta
+  </button>
+     
+  <button id="back-btn" class="action-btn fade-in secondary">
+    Voltar
+  </button>
+</div>
+    `;
+    
+    // Fade in with new colors
+      setTimeout(() => {
+        this.container.style.opacity = '1';
+      }, 50);
+    
+    // Bind new events
+    document.getElementById('register-btn').addEventListener('click', () => this.performRegistration());
+    document.getElementById('back-btn').addEventListener('click', () => this.handleBackButton());
+    
+    this.isTransitioning = false;
+  }, 500);
+}
+/**
+ * 
+ * Handle back button - return to login with color reversal
+ */
+handleBackButton() {
+  // Prevent multiple clicks
+  if (this.isTransitioning) return;
+  this.isTransitioning = true;
+  
+  // Fade out container
+  this.container.style.opacity = '0';
+  
+  setTimeout(() => {
+    // 
+    //this.container.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+    //this.container.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+    
+    // Restore original login form
+    const loginBox = document.querySelector('.login-box');
+    loginBox.innerHTML = `
+      <div class="input-group">
+        <i class="input-icon fas fa-user"></i>
+        <input 
+          type="text" 
+          id="username" 
+          class="input-field" 
+          placeholder="nome de usuário (Ou clique abaixo em cadastre-me)"
+          autocomplete="off"
+        >
+      </div>
+      
+      <div class="input-group hidden" id="password-group">
+        <i class="input-icon fas fa-lock"></i>
+        <input 
+          type="password" 
+          id="password" 
+          class="input-field" 
+          placeholder="senha"
+          autocomplete="off"
+        >
+      </div>
+      
+      <button id="action-btn" class="action-btn">cadastre-me</button>
+    `;
+    
+    // Re-initialize elements
+    this.initElements();
+    this.bindEvents();
+    
+    // Call proceedWithReset to restore login state
+    this.proceedWithReset();
+  }, 500);
+}
+/**
+ * Perform registration via API
+ */
+async performRegistration() {
+  const username = document.getElementById('reg-username').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value.trim();
+  const passwordConfirm = document.getElementById('reg-password-confirm').value.trim();
+  
+  // Validation
+  if (!username || !email || !password || !passwordConfirm) {
+    this.showError('Por favor, preencha todos os campos');
+    return;
+  }
+  
+  if (password !== passwordConfirm) {
+    this.showError('As senhas não coincidem');
+    return;
+  }
+  
+  if (password.length < 6) {
+    this.showError('A senha deve ter pelo menos 6 caracteres');
+    return;
+  }
+  
+  // Show loading
+  const registerBtn = document.getElementById('register-btn');
+  registerBtn.textContent = 'Criando conta...';
+  registerBtn.disabled = true;
+  
+  try {
+    // Call server-side registration function
+    const result = await new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler(reject)
+        .api_register(username, password, email, 'CLIENT');
+    });
+    
+    const data = JSON.parse(result.getContent());
+    
+    if (data.success) {
+      // Show success message
+      this.showSuccess('Conta criada com sucesso!');
+      
+      // Redirect to dashboard
+      setTimeout(() => {
+        window.location.href = data.redirectUrl;
+      }, 1500);
+    } else {
+      throw new Error(data.error || 'Cadastro falhou');
+    }
+  } catch (error) {
+    registerBtn.textContent = 'Criar Conta';
+    registerBtn.disabled = false;
+    this.showError(error.message || 'Erro ao criar conta');
+  }
+}
+
+/**
+ * Show error message
+ */
+showError(message) {
+  // Create error element if it doesn't exist
+  let errorDiv = document.getElementById('error-message');
+  if (!errorDiv) {
+    errorDiv = document.createElement('div');
+    errorDiv.id = 'error-message';
+    errorDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #d32f2f;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 10000;
+      animation: slideDown 0.3s ease;
+    `;
+    document.body.appendChild(errorDiv);
+  }
+  
+  errorDiv.textContent = message;
+  errorDiv.style.display = 'block';
+  
+  // Auto-hide after 4 seconds
+  setTimeout(() => {
+    errorDiv.style.display = 'none';
+  }, 4000);
+}
+
+/**
+ * Show success message
+ */
+showSuccess(message) {
+  let successDiv = document.getElementById('success-message');
+  if (!successDiv) {
+    successDiv = document.createElement('div');
+    successDiv.id = 'success-message';
+    successDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2e7d32;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 10000;
+      animation: slideDown 0.3s ease;
+    `;
+    document.body.appendChild(successDiv);
+  }
+  
+  successDiv.textContent = message;
+  successDiv.style.display = 'block';
+  
+  setTimeout(() => {
+    successDiv.style.display = 'none';
+  }, 4000);
+}
       
       /**
        * Proceed with reset sequence after image display
