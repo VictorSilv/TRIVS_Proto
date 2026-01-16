@@ -1,0 +1,87 @@
+<!-- Dashboard.html - Content only, no styles -->
+<div class="dashboard-sidebar">
+  <div class="sidebar-header">
+    <div class="user-info">
+      <div class="user-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="user-name" id="user-name-display">Loading...</div>
+      <div class="user-role" id="user-role-display">Loading...</div>
+    </div>
+  </div>
+  
+  <ul class="nav-menu">
+    <li class="nav-item">
+      <a href="#" class="nav-link active" data-view="dashboard">
+        <span class="nav-icon"><i class="fas fa-home"></i></span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+    </li>
+    <li class="nav-item" id="nav-view-orders">
+      <a href="#" class="nav-link" data-view="orders">
+        <span class="nav-icon"><i class="fas fa-list"></i></span>
+        <span class="nav-text">Orders</span>
+      </a>
+    </li>
+    <li class="nav-item" id="nav-create-order">
+      <a href="#" class="nav-link" data-view="create-order">
+        <span class="nav-icon"><i class="fas fa-plus-circle"></i></span>
+        <span class="nav-text">New Order</span>
+      </a>
+    </li>
+    <li class="nav-item" id="nav-view-map">
+      <a href="#" class="nav-link" data-view="map">
+        <span class="nav-icon"><i class="fas fa-map"></i></span>
+        <span class="nav-text">Live Map</span>
+      </a>
+    </li>
+    <li class="nav-item" id="nav-plan-routes">
+      <a href="#" class="nav-link" data-view="routes">
+        <span class="nav-icon"><i class="fas fa-route"></i></span>
+        <span class="nav-text">Plan Routes</span>
+      </a>
+    </li>
+    <li class="nav-item" id="nav-manage-inventory">
+      <a href="#" class="nav-link" data-view="inventory">
+        <span class="nav-icon"><i class="fas fa-boxes"></i></span>
+        <span class="nav-text">Inventory</span>
+      </a>
+    </li>
+    <li class="nav-item" id="nav-driver-tools">
+      <a href="#" class="nav-link" data-view="driver">
+        <span class="nav-icon"><i class="fas fa-truck"></i></span>
+        <span class="nav-text">Driver Tools</span>
+      </a>
+    </li>
+  </ul>
+  
+  <div class="sidebar-footer">
+    <button class="logout-btn" id="logout-button">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </div>
+</div>
+
+<div class="dashboard-main">
+  <header class="dashboard-header">
+    <h1 class="header-title" id="page-title">Dashboard</h1>
+    <div class="header-subtitle" id="page-subtitle">Welcome back</div>
+  </header>
+  
+  <main class="dashboard-content" id="view-container">
+    <!-- Dynamic content will be loaded here -->
+    <div class="content-card">
+      <div class="card-header">
+        <h2 class="card-title">Quick Overview</h2>
+        <div class="card-actions">
+          <button class="btn-secondary" id="refresh-btn">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+      </div>
+      <div id="overview-content">
+        <p>Loading dashboard content...</p>
+      </div>
+    </div>
+  </main>
+</div>
